@@ -1,11 +1,11 @@
 const taskContainer = document.querySelector(".task_container");
-const globalStorage = [];
+let globalStorage = [];
 
-const generateNewCard=(taskData)=>`<div class="col-md-6 col-lg-4" id=${taskData.id} >
+const generateNewCard=(taskData)=>`<div class="col-md-6 col-lg-4" >
 <div class="card">
     <div class="card-header d-flex justify-content-end gap-2">
-        <button type="button" class="btn btn-outline-success"><i class="fas fa-pencil-alt"></i></button>
-        <button type="button" class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
+        <button type="button" class="btn btn-outline-success" ><i class="fas fa-pencil-alt"></i></button>
+        <button type="button" class="btn btn-outline-danger" id=${taskData.id} onclick="deleteCard.apply(this, arguments)" ><i class="fas fa-trash-alt" id=${taskData.id} onclick="deleteCard.apply(this, arguments)"></i></button>
     </div>
     <div class="card-body">
         <img src=${taskData.imageUrl} class="card-img-top">
@@ -52,4 +52,24 @@ const saveChanges = () => {
 taskContainer.insertAdjacentHTML("beforeend", generateNewCard(taskData));
 globalStorage.push(taskData);
 localStorage.setItem("tasky",JSON.stringify({cards:globalStorage}));
+};
+
+const deleteCard = (event) =>{
+    event = window.event;
+    //id
+    const targetID = event.target.id;
+    const tagName = event.target.tagname;//this checks what tag and givess out put in CAPS
+    //match the id of the element with id inside the globatStore
+    globalStorage = globalStorage.filter((cardObject)=>cardObject.id != targetID)
+    //if match found remove
+
+    localStorage.setItem("tasky",JSON.stringify({cards:globalStorage}));//updating localstorage again so that card do no comeback after delting
+
+
+    if(tagName === "BUTTON"){
+        return taskContainer.removeChild(event.target.parentNode.parentNode.parentNode);
+    }else{
+        return taskContainer.removeChild(event.target.parentNode.parentNode.parentNode.parentNode);
+    }
+   // task_container.removeChild(getElementById(targetID));
 };
